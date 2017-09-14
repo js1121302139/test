@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2048</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+
+<body>
+    <div class="main">
+        <!-- <div class="block postion-1-1">2</div>
+        <div class="block postion-1-2">2</div>
+        <div class="block postion-1-3">2</div>
+        <div class="block postion-1-4">2</div>
+        <div class="block postion-2-1">2</div>
+        <div class="block postion-2-2">2</div>
+        <div class="block postion-2-3">2</div>
+        <div class="block postion-2-4">2</div>
+        <div class="block postion-3-1">2</div>
+        <div class="block postion-3-2">2</div>
+        <div class="block postion-3-3">2</div>
+        <div class="block postion-3-4">2</div>
+        <div class="block postion-4-1">2</div>
+        <div class="block postion-4-2">2</div>
+        <div class="block postion-4-3">2</div>
+        <div class="block postion-4-4">2</div> -->
+    </div>
+</body>
+<script>
+    const color = ["#33FFFF", "#33FFCC", "#33FF99", "#33FF66", "#33FF33", "#33FF00"];
+    const mainBox = document.querySelector(".main");
+    const blockAllBox = document.querySelectorAll(".block");
+    let mainWidth = mainBox.clientWidth;
+    let maxNum = 64;
+    console.log(mainWidth / 4);
+    //游戏的盒子
+    let allGameBlocks = []
+
+    function Init() {
+        let isOneGame = true;
+        if (isOneGame) {
+            let str = "";
+            for (let i = 0; i < 2; i++) {
+                if (allGameBlocks.indexOf("postion-" + random().x + "-" + random().y) != -1) {
+                    allGameBlocks.push("postion-" + (random().x + 1) + "-" + random().y);
+                }
+            }
+            for (let i = 0; i < allGameBlocks.length; i++) {
+                str += '<div class="block tile-2 ' + allGameBlocks[i] + '">2</div>';
+            }
+            mainBox.innerHTML += str;
+            isOneGame = false;
+        }
+    }
+    Init()
+
+    function randomBlock() {
+        let _BlockXY = random()
+        let Numberfor = parseInt(Math.random() * 10) //产生出数字为四的随机数
+        if (Numberfor == 4 && maxNum >= 64) {
+            mainBox.innerHTML += '<div class="block tile-4 postion-' + _BlockXY.x + '-' + _BlockXY.y + '">4</div>'
+            allGameBlocks.push("postion-" + _BlockXY.x + "-" + _BlockXY.y);
+        } else {
+            mainBox.innerHTML += '<div class="block tile-2 postion-' + _BlockXY.x + '-' + _BlockXY.y + '">2</div>'
+            allGameBlocks.push("postion-" + _BlockXY.x + "-" + _BlockXY.y);
+        }
+    }
+
+    function Touch(callBack) {
+        var callBack = callBack;
+        let XY = {
+            starX: null,
+            starY: null,
+            x: null,
+            y: null,
+            touchPostion: false
+        }
+
+        function touchStart(e) {
+            e.preventDefault();
+            let touch = e.touches[0];
+            XY.starX = touch.pageX;
+            XY.starY = touch.pageY;
+            XY.touchPostion = false;
+
+        }
+
+        function touchMove(e) {
+            e.preventDefault();
+            let touch = e.touches[0];
+            XY.x = touch.pageX - XY.starX;
+            XY.y = touch.pageY - XY.starY;
+            XY.touchPostion = false;
+            //callBack(XY)
+        }
+
+        function touchEnd(e) {
+            e.preventDefault();
+            XY.touchpostion = true;
+            callBack(XY)
+        }
+        window.addEventListener("touchstart", touchStart, false);
+        window.addEventListener("touchmove", touchMove, false);
+        window.addEventListener("touchend", touchEnd, false);
+    }
+    Touch(function(data) {
+        console.log(data)
+        if (data.x > 80) {
+            console.log("向右移动了")
+            randomBlock()
+        } else if (data.x < -80) {
+            console.log("向左移动了")
+            randomBlock()
+        }
+        if (data.y > 80) {
+            console.log("向下移动了")
+            randomBlock()
+        } else if (data.y < -80) {
+            console.log("向上移动了")
+            randomBlock()
+        }
+
+    })
+
+    function random() {
+        let num = Math.ceil(Math.random() * 4);
+        return {
+            x: num,
+            y: num
+        }
+    }
+</script>
+
+</html>
