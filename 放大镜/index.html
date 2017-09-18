@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Document</title>
+	</head>
+
+	<body>
+		<img id="imgBox" />
+		<div id="showBox"></div>
+		<div class="mark"></div>
+	</body>
+
+</html>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		font-size: 0;
+	}
+	
+	html,
+	body {
+		min-height: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	
+	.mark {
+		position: absolute;
+		z-index: 1000;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background: #000;
+		opacity: 0.2;
+	}
+	
+	#showBox {
+		width: 0;
+		height: 0;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background-repeat: no-repeat;
+	}
+</style>
+<script type="text/javascript" src="js/mui.js"></script>
+<script>
+	var imgsrc = null;
+	//获取窗口
+	function wh() {
+		return {
+			w: window.innerWidth,
+			h: window.innerHeight
+		}
+	}
+	// 绘制显示的图像
+	function drwImg(imgsrc) {
+		var img = new Image();
+		img.src = imgsrc;
+		return {
+			w: img.width,
+			h: img.height
+		}
+	}
+	// 获取缩放比例
+	function scales() {
+		return drwImg(imgsrc).w / wh().w;
+	}
+	window.addEventListener('touchmove', function(e) {
+		moveBox(250, 100, e.touches[0].clientX, e.touches[0].clientY);
+	})
+	// 检测是否与四边有碰撞
+	function isCollision(w,h,x,y) {
+		if((y - (h / 2)) < 0) {
+			showBox.style.top = 0 + "px";
+		}
+		if((y + (h / 2)) >= wh().h) {
+			showBox.style.top = (wh().h - (h)) + "px";
+		} 
+		if(x - (w / 2) <= 0) {
+			showBox.style.left = 0 + "px";
+		}
+		if(x + (w / 2) >= wh().w) {
+			showBox.style.left = (wh().w - (w)) + "px";
+		}
+		
+		if((x - w/2)*scales() < 0) {
+			showBox.style.backgroundPositionX=-0+'px';
+		}
+		if((x - w/2)*scales() >= drwImg(imgsrc).w) {
+			showBox.style.backgroundPositionX= (wh().w - (w)) + "px";
+		}
+		if((y - h/2)*scales() >= drwImg(imgsrc).h) {
+			showBox.style.top = (wh().h - (h)) + "px";
+		} 
+		if((y - h/2)*scales() <= 0) {
+			showBox.style.backgroundPositionY=0+'px';
+		}
+	}
+
+	function moveBox(w, h, x, y) {
+		showBox.style.width = w + "px";
+		showBox.style.height = h + "px";
+		showBox.style.top = (y - (h / 2)) + "px";
+		showBox.style.left = (x - (w / 2)) + "px"; 
+		console.log(((x - w/2)*scales()))
+		showBox.style.backgroundPositionY=-((y - h/2)*scales())+'px';
+		showBox.style.backgroundPositionX=-((x - w/2)*scales())+'px';
+		isCollision(w, h, x, y);
+	}
+	// 设置图片容器的宽高
+	imgBox.width = wh().w;
+	imgBox.height = wh().h;
+	
+	window.addEventListener("tap", function() {
+		mui.plusReady(function() {
+			plus.gallery.pick(function(e) {
+				console.log(JSON.stringify(drwImg(e)))
+				imgBox.setAttribute("src", e);
+				imgsrc = e;
+				// 设置移动方块的背景图
+				showBox.style.backgroundImage = "url(" + e + ")";
+				showBox.style.backgroundSize = drwImg().w + "px" + drwImg().h + "px";
+				showBox.style.backgroundPosition="0px 0px";
+			}, function(e) {
+
+			}, {
+				filter: "image"
+			})
+		})
+	})
+</script>
