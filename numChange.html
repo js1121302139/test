@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="num">
+
+    </div>
+    <div class="num1">
+
+    </div>
+    <div class="num2">
+
+    </div>
+    <div class="num3">
+
+    </div>
+</body>
+<script>
+    function Num(val, el) {
+        this.Num = val;
+        this.overNum = (this.Num - Math.ceil(Math.random(1) * 20));
+        this.num = document.querySelector(el);
+        var time = setInterval(function() {
+            this.overNum += 1;
+            this.num.innerText = this.overNum;
+            if (this.overNum >= this.Num) {
+                clearInterval(time);
+                this.overNum = this.Num;
+                this.num.innerText = this.overNum;
+            }
+        }.bind(this), 30)
+    }
+    new Num(200, '.num');
+    new Num(200, '.num1');
+    new Num(200, '.num2');
+    new Num(200, '.num3');
+</script>
+
+</html>
